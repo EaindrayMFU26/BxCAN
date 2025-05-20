@@ -181,7 +181,7 @@ static void MX_CAN1_Init(void)
   //CAN BIT Timing
   hcan1.Init.Prescaler = 3;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
+  hcan1.Init.TimeSeg1 = CAN_BS1_11TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
   if (HAL_CAN_Init(&hcan1) != HAL_OK)
   {
@@ -218,10 +218,10 @@ static void MX_GPIO_Init(void)
 void CAN1_Tx(void)
 {
 	uint32_t TxMailbox;
-	uint8_t msg[11] = {'R','0','M',' ','D','y','n','a','m','i','c'};
+	uint8_t msg[12] = {'R','0','M',' ','D','y','n','a','m','i','c','s'};
 
 	CAN_TxHeaderTypeDef TxHeader;
-	TxHeader.DLC = 5;
+	TxHeader.DLC = 8;
 	TxHeader.StdId = 0x45D;
 	TxHeader.IDE = CAN_ID_STD;
 	TxHeader.RTR = CAN_RTR_DATA;
