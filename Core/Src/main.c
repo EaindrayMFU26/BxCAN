@@ -43,6 +43,7 @@
 CAN_HandleTypeDef hcan1;
 
 /* USER CODE BEGIN PV */
+void CAN1_Tx(void);
 
 /* USER CODE END PV */
 
@@ -90,6 +91,8 @@ int main(void)
   MX_GPIO_Init();
   MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
+  if(HAL_CAN_Start(&hcan1) != HAL_OK) {Error_Handler(); }
+  CAN1_Tx();
 
   /* USER CODE END 2 */
 
@@ -212,6 +215,23 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void CAN1_Tx(void)
+{
+	uint32_t TxMailbox;
+	uint8_t msg[11] = {'R','0','M',' ','D','y','n','a','m','i','c'};
+
+	CAN_TxHeaderTypeDef TxHeader;
+	TxHeader.DLC = 5;
+	TxHeader.StdId = 0x45D;
+	TxHeader.IDE = CAN_ID_STD;
+	TxHeader.RTR = CAN_RTR_DATA;
+
+	if( HAL_CAN_AddTxMessage (&hcan1, &TxHeader, msg, &TxMailbox) != HAL_OK)
+	{
+		Error_Handler();
+	}
+	while( HAL_CAN_IsTxMessagePending(&hcan1, TxMailbox) );
+}
 
 /* USER CODE END 4 */
 
