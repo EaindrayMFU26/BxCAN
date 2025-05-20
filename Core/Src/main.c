@@ -45,6 +45,7 @@ CAN_HandleTypeDef hcan1;
 /* USER CODE BEGIN PV */
 void CAN1_Tx(void);
 void CAN1_Rx(void);
+void CAN1_FilterConfig(void);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -91,6 +92,7 @@ int main(void)
   MX_GPIO_Init();
   MX_CAN1_Init();
   /* USER CODE BEGIN 2 */
+  CAN1_FilterConfig();
   if(HAL_CAN_Start(&hcan1) != HAL_OK) {Error_Handler(); }
   CAN1_Tx();
   CAN1_Rx();
@@ -244,10 +246,27 @@ void CAN1_Rx(void)
 	if(HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, rec_msg) != HAL_OK){
 		Error_Handler();
 	}
-
-
 }
 
+void CAN1_FilterConfig(void)
+{
+    CAN_FilterTypeDef can1_filter;
+
+    can1_filter.FilterActivation = ENABLE;
+    can1_filter.FilterBank = 0;
+    can1_filter.FilterFIFOAssignment = CAN_RX_FIFO0;
+    can1_filter.FilterIdHigh = 0x0000;
+    can1_filter.FilterIdLow = 0x0000;
+    can1_filter.FilterMaskIdHigh = 0x0000;
+    can1_filter.FilterMaskIdLow = 0x0000;
+    can1_filter.FilterMode = CAN_FILTERMODE_IDMASK;
+    can1_filter.FilterScale = CAN_FILTERSCALE_32BIT;
+
+    if (HAL_CAN_ConfigFilter(&hcan1, &can1_filter) != HAL_OK)
+    {
+        Error_Handler();
+    }
+}
 /* USER CODE END 4 */
 
 /**
