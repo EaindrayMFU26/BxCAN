@@ -44,7 +44,7 @@ CAN_HandleTypeDef hcan1;
 
 /* USER CODE BEGIN PV */
 void CAN1_Tx(void);
-
+void CAN1_Rx(void);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,6 +93,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   if(HAL_CAN_Start(&hcan1) != HAL_OK) {Error_Handler(); }
   CAN1_Tx();
+  CAN1_Rx();
 
   /* USER CODE END 2 */
 
@@ -231,6 +232,20 @@ void CAN1_Tx(void)
 		Error_Handler();
 	}
 	while( HAL_CAN_IsTxMessagePending(&hcan1, TxMailbox) );
+}
+
+void CAN1_Rx(void)
+{
+	CAN_RxHeaderTypeDef RxHeader;
+	uint8_t rec_msg[11];
+
+	while( !HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0));
+
+	if(HAL_CAN_GetRxMessage(&hcan1, CAN_RX_FIFO0, &RxHeader, rec_msg) != HAL_OK){
+		Error_Handler();
+	}
+
+
 }
 
 /* USER CODE END 4 */
